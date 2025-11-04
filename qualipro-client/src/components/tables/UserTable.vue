@@ -2,7 +2,10 @@
     <div class="bg-white shadow-md rounded-lg p-4">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold">Users</h2>
-            <q-btn color="primary" icon="fa-solid fa-plus" label="Create User" @click="$emit('create')" />
+            <q-btn color="primary" @click="openCreateModal">
+                Create User
+                <font-awesome-icon class="q-ml-sm" :icon="['fas', 'plus']" />
+            </q-btn>
         </div>
 
         <q-table flat bordered :rows="users" :columns="columns" row-key="id" :loading="loading" :pagination="pagination"
@@ -20,22 +23,44 @@
 
             <template #body-cell-actions="props">
                 <q-td class="text-center space-x-2">
-                    <q-btn dense flat round icon="fa-solid fa-eye" color="info" @click="$emit('view', props.row)" />
-                    <q-btn dense flat round icon="fa-solid fa-pen-to-square" color="primary"
-                        @click="$emit('edit', props.row)" />
-                    <q-btn dense flat round icon="fa-solid fa-trash" color="negative"
-                        @click="$emit('delete', props.row)" />
+                    <q-btn dense flat round color="info" @click="openViewModal(props.row)">
+                        <font-awesome-icon :icon="['fas', 'eye']" />
+                    </q-btn>
+
+                    <q-btn dense flat round color="primary" @click="openEditModal(props.row)">
+                        <font-awesome-icon :icon="['fas', 'pen-to-square']" />
+                    </q-btn>
+
+                    <q-btn dense flat round color="negative" @click="deleteUser(props.row)">
+                        <font-awesome-icon :icon="['fas', 'trash']" />
+                    </q-btn>
                 </q-td>
             </template>
         </q-table>
+
+        <CreateUserModal ref="createModal" @saved="refreshUsers" />
+        <ViewUserModal ref="viewModal" :user="selectedUser" />
+        <EditUserModal ref="editModal" :user="selectedUser" @updated="refreshUsers" />
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useUserStore } from '@/stores/userStore'
+import { Notify, Dialog } from 'quasar'
+import CreateUserModal from '@/components/modals/CreateUserModal.vue'
+import ViewUserModal from '@/components/modals/ViewUserModal.vue'
+import EditUserModal from '@/components/modals/EditUserModal.vue'
 
 const userStore = useUserStore()
+
+const createModal = ref(null)
+const viewModal = ref(null)
+const editModal = ref(null)
+
+const openCreateModal = () => createModal.value.open()
+const openViewModal = (user) => { selectedUser.value = user; viewModal.value.open() }
+const openEditModal = (user) => { selectedUser.value = user; editModal.value.open() }
 
 const columns = [
     { name: 'avatar', label: 'Avatar', field: 'avatar', align: 'center' },
@@ -45,25 +70,45 @@ const columns = [
     { name: 'actions', label: 'Actions', align: 'center' },
 ]
 
+const selectedUser = ref(null)
+
 const pagination = ref({
     page: 1,
     rowsPerPage: 10,
     rowsNumber: userStore.total,
 })
 
-const onRequest = async (params) => {
-    await userStore.getUsers({
-        page: params.pagination.page,
-        limit: params.pagination.rowsPerPage,
-    })
-    pagination.value.page = params.pagination.page
+const users = computed(() => userStore.users)
+const loading = computed(() => userStore.loading)
+
+const fetchUsers = async (page = 1, limit = 10) => {
+    await userStore.getUsers({ page, limit })
     pagination.value.rowsNumber = userStore.total
 }
 
-onMounted(() => {
-    userStore.getUsers()
-})
+const refreshUsers = () => fetchUsers(pagination.value.page, pagination.value.rowsPerPage)
 
-const users = computed(() => userStore.users)
-const loading = computed(() => userStore.loading)
+const onRequest = async (params) => {
+    await fetchUsers(params.pagination.page, params.pagination.rowsPerPage)
+    pagination.value.page = params.pagination.page
+}
+
+const deleteUser = (user) => {
+    Dialog.create({
+        title: 'Confirm Delete',
+        message: `Are you sure you want to delete ${user.first_name} ${user.last_name}?`,
+        cancel: true,
+        persistent: true,
+    }).onOk(async () => {
+        try {
+            await userStore.deleteUser(user.id)
+            Notify.create({ type: 'positive', message: 'User deleted successfully' })
+            refreshUsers()
+        } catch (err) {
+            Notify.create({ type: 'negative', message: 'Failed to delete user' })
+        }
+    })
+}
+
+onMounted(() => fetchUsers())
 </script>

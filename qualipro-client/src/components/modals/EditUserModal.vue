@@ -8,7 +8,7 @@
             <q-input v-model="form.email" label="Email" type="email" outlined class="mb-3" />
 
             <div class="flex justify-end gap-2 mt-4">
-                <q-btn flat label="Cancel" color="gray" @click="show = false" />
+                <q-btn flat label="Cancel" color="gray" @click="close" />
                 <q-btn color="primary" label="Save" @click="submit" />
             </div>
         </q-card>
@@ -17,7 +17,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/userStore'
 
 const show = ref(false)
 const form = ref({})

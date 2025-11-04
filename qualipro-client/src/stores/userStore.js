@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
 import api from '@/api/axios'
 
 export const useUserStore = defineStore('user', {
@@ -30,7 +29,7 @@ export const useUserStore = defineStore('user', {
 
         async getUserById(id) {
             try {
-                const res = await axios.get(`/users/${id}`)
+                const res = await api.get(`/users/${id}`)
                 this.selectedUser = res.data
                 return res.data
             } catch (err) {
@@ -40,7 +39,7 @@ export const useUserStore = defineStore('user', {
 
         async createUser(payload) {
             try {
-                const res = await axios.post(`/users`, payload)
+                const res = await api.post(`/users`, payload)
                 return res.data
             } catch (err) {
                 console.error('Error creating user:', err)
@@ -50,7 +49,7 @@ export const useUserStore = defineStore('user', {
 
         async editUser(id, payload) {
             try {
-                const res = await axios.put(`/users/${id}`, payload)
+                const res = await api.put(`/users/${id}`, payload)
                 return res.data
             } catch (err) {
                 console.error('Error editing user:', err)
@@ -60,7 +59,7 @@ export const useUserStore = defineStore('user', {
 
         async deleteUser(id) {
             try {
-                await axios.delete(`/users/${id}`)
+                await api.delete(`/users/${id}`)
             } catch (err) {
                 console.error('Error deleting user:', err)
                 throw err
