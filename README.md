@@ -21,7 +21,7 @@ root
 
 - Node.js >= 18
 - npm >= 9
-- MySQL/PostgreSQL database (depending on your backend config)
+- MySQL database
 
 ---
 
@@ -31,7 +31,6 @@ root
 
 In the backend (`qualipro-server`), there is a `.env-example` file. Copy it to `.env` and fill in your configuration:
 
-```bash
 cp qualipro-server/.env-example qualipro-server/.env
 
 PORT=
@@ -51,8 +50,7 @@ JWT_EXPIRES_IN=
 
 From the project root, run:
 
-```bash
-npm run install
+npm install
 
 cd qualipro-server/src/seeds
 node seed.js
