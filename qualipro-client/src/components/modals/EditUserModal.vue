@@ -17,11 +17,11 @@
         </q-card>
     </q-dialog>
 </template>
-
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useUserStore } from '@/stores/userStore'
 import { useRoleStore } from '@/stores/roleStore'
+import { Notify } from 'quasar'
 
 const show = ref(false)
 const form = ref({})
@@ -46,7 +46,7 @@ watch(
 
 function open(user) {
     form.value = { ...user }
-    selectedRole.value = user.role ? user.role.roleName : null
+    selectedRole.value = user.role ? user.role : null
     show.value = true
 }
 
@@ -55,14 +55,36 @@ function close() {
 }
 
 async function submit() {
+    // Validation
+    if (!form.value.first_name || !form.value.last_name || !form.value.email) {
+        Notify.create({
+            type: 'warning',
+            message: 'Please fill in all fields',
+            timeout: 3000,
+            position: 'top'
+        })
+        return
+    }
+
     if (!selectedRole.value) {
-        alert('Please select a role')
+        Notify.create({
+            type: 'warning',
+            message: 'Please select a role',
+            timeout: 3000,
+            position: 'top'
+        })
         return
     }
 
     try {
         await userStore.editUser(form.value.id, { ...form.value, roleId: selectedRole.value.id })
         await userStore.getUsers()
+        Notify.create({
+            type: 'positive',
+            message: 'User Edited Successfully',
+            timeout: 5000,
+            position: 'top'
+        })
         close()
     } catch (err) {
         console.error(err)
