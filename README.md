@@ -32,7 +32,7 @@ root
 
 ### 1. Prepare Environment Variables
 
-In the backend (`qualipro-server`), there is a `.env-example` file. Copy it to `.env` and fill in your configuration:
+In the backend (`qualipro-server`), and In the frontend (`qualipro-client`), there are `.env-example` file. Copy it to `.env` and fill in your configuration:
 
 cp qualipro-server/.env-example qualipro-server/.env
 
@@ -48,6 +48,13 @@ DB_PASS=
 
 JWT_SECRET=
 JWT_EXPIRES_IN=
+
+cp qualipro-client/.env-example qualipro-client/.env
+
+VITE_API_BASE_URL=
+VITE_PORT=
+VITE_APP_NAME=QualiproApp
+
 
 ### 2. Install Dependencies
 
