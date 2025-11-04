@@ -60,7 +60,7 @@ const editModal = ref(null)
 
 const openCreateModal = () => createModal.value.open()
 const openViewModal = (user) => { selectedUser.value = user; viewModal.value.open() }
-const openEditModal = (user) => { selectedUser.value = user; editModal.value.open() }
+const openEditModal = (user) => { selectedUser.value = user; editModal.value.open(user) }
 
 const columns = [
     { name: 'avatar', label: 'Avatar', field: 'avatar', align: 'center' },

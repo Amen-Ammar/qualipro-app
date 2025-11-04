@@ -31,7 +31,7 @@ export const useUserStore = defineStore('user', {
             try {
                 const res = await api.get(`/users/${id}`)
                 this.selectedUser = res.data
-                return res.data
+                return res.data.result
             } catch (err) {
                 console.error('Error fetching user:', err)
             }
@@ -40,7 +40,7 @@ export const useUserStore = defineStore('user', {
         async createUser(payload) {
             try {
                 const res = await api.post(`/users`, payload)
-                return res.data
+                return res.data.result
             } catch (err) {
                 console.error('Error creating user:', err)
                 throw err
@@ -49,8 +49,8 @@ export const useUserStore = defineStore('user', {
 
         async editUser(id, payload) {
             try {
-                const res = await api.put(`/users/${id}`, payload)
-                return res.data
+                const res = await api.patch(`/users/${id}`, payload)
+                return res.data.result
             } catch (err) {
                 console.error('Error editing user:', err)
                 throw err

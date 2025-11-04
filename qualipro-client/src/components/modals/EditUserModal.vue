@@ -7,6 +7,9 @@
             <q-input v-model="form.last_name" label="Last Name" outlined class="mb-3" />
             <q-input v-model="form.email" label="Email" type="email" outlined class="mb-3" />
 
+            <q-select v-model="selectedRole" :options="roles" option-value="id" option-label="roleName"
+                label="Select Role" outlined class="mb-3" />
+
             <div class="flex justify-end gap-2 mt-4">
                 <q-btn flat label="Cancel" color="gray" @click="close" />
                 <q-btn color="primary" label="Save" @click="submit" />
@@ -16,15 +19,34 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useUserStore } from '@/stores/userStore'
+import { useRoleStore } from '@/stores/roleStore'
 
 const show = ref(false)
 const form = ref({})
+const selectedRole = ref(null)
+const roles = ref([])
+
 const userStore = useUserStore()
+const roleStore = useRoleStore()
+
+onMounted(async () => {
+    await roleStore.fetchRoles()
+    roles.value = roleStore.roles
+})
+
+watch(
+    () => roleStore.roles,
+    (newRoles) => {
+        roles.value = newRoles
+    },
+    { immediate: true }
+)
 
 function open(user) {
     form.value = { ...user }
+    selectedRole.value = user.role ? user.role.roleName : null
     show.value = true
 }
 
@@ -33,8 +55,13 @@ function close() {
 }
 
 async function submit() {
+    if (!selectedRole.value) {
+        alert('Please select a role')
+        return
+    }
+
     try {
-        await userStore.editUser(form.value.id, form.value)
+        await userStore.editUser(form.value.id, { ...form.value, roleId: selectedRole.value.id })
         await userStore.getUsers()
         close()
     } catch (err) {
