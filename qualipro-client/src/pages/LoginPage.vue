@@ -1,15 +1,18 @@
 <template>
     <AuthLayout>
-        <q-card class="w-96 p-4">
+        <q-card class="q-pa-lg shadow-2" style="width: 400px; max-width: 90vw;">
             <q-card-section>
                 <div class="text-h6 text-center">Login</div>
             </q-card-section>
+
             <q-card-section>
-                <q-input filled v-model="email" label="Email" />
-                <q-input filled type="password" v-model="password" label="Password" />
+                <q-input filled v-model="email" label="Email" class="q-mb-md" />
+                <q-input filled type="password" v-model="password" label="Password" class="q-mb-md" />
+                <div v-if="error" class="text-negative text-caption text-center q-mt-sm">{{ error }}</div>
             </q-card-section>
+
             <q-card-actions align="center">
-                <q-btn color="primary" label="Login" @click="handleLogin" />
+                <q-btn color="primary" label="Login" :loading="loading" @click="handleLogin" class="q-px-xl" />
             </q-card-actions>
         </q-card>
     </AuthLayout>

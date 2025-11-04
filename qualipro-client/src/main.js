@@ -5,10 +5,18 @@ import { useAuthStore } from './stores/authStore'
 import App from './App.vue'
 import router from './router'
 
-import quasarSetup from './quasar'
+import { Quasar, Dialog, Notify } from 'quasar'
+import quasarLang from 'quasar/lang/en-US'
+
+import 'quasar/src/css/index.sass'
+import '@quasar/extras/material-icons/material-icons.css'
 
 const app = createApp(App)
-quasarSetup(app)
+
+app.use(Quasar, {
+  plugins: { Dialog, Notify },
+  lang: quasarLang,
+})
 
 app.use(createPinia())
 app.use(router)
