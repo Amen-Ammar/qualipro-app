@@ -15,7 +15,6 @@ module.exports = {
             throw error;
         }
 
-        console.log({ user: user.password })
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             const error = new Error("Invalid user credentials");
@@ -93,12 +92,16 @@ module.exports = {
     },
 
     async getUsers(condition) {
+        const page = parseInt(condition.page) || 1;
+        const limit = parseInt(condition.limit) || 10;
+        const offset = (page - 1) * limit;
+        
         if (condition.where && condition.where.email) {
             const searchValue = condition.where.email;
             condition.where.email = { [Op.iLike]: `%${searchValue}%` };
         }
-
-        const users = await User.findAll({
+        
+        const { count, rows: users } = await User.findAndCountAll({
             ...condition,
             attributes: { exclude: ['password'] },
             include: {
@@ -106,9 +109,18 @@ module.exports = {
                 as: 'role',
                 attributes: ['id', 'roleName', 'roleCode'],
             },
+            limit,
+            offset,
+            distinct: true,
+            order: [['createdAt', 'DESC']],
         });
 
-        return users;
+        return {
+            total: count,
+            page,
+            totalPages: Math.ceil(count / limit),
+            users,
+        };
     },
 
     async updateUser(id, data) {

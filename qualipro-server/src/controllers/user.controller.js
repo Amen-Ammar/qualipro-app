@@ -68,8 +68,8 @@ exports.createUser = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
   try {
-    const { email } = req.query;
-    const condition = email ? { where: { email } } : {};
+    const { email, page, limit } = req.query;
+    const condition = email ? { where: { email }, page, limit } : { page, limit };
     const users = await userService.getUsers(condition);
 
     CustomResponse(res, 200, users, true);
