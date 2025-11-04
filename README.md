@@ -6,7 +6,7 @@
 A full-stack project with a frontend and backend, using Quasar/Vue.js for the frontend and Node.js/Sequelize for the backend.
 
 ---
-
+```bash
 ## Project Structure
 root
 │
