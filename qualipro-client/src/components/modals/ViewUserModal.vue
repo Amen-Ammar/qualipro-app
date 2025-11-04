@@ -1,19 +1,49 @@
 <template>
-    <q-dialog v-model="show">
-        <q-card class="w-full max-w-md p-6">
-            <h2 class="text-xl font-bold mb-4">User Details</h2>
+  <q-dialog v-model="show" persistent>
+    <q-card class="q-pa-md" style="min-width: 320px; max-width: 400px;">
+      <!-- Header -->
+      <q-card-section class="row items-center justify-center q-mb-md">
+        <q-avatar size="80px" rounded>
+          <img :src="user.avatar || 'https://ui-avatars.com/api/?name=User&background=random'" />
+        </q-avatar>
+      </q-card-section>
 
-            <div class="flex flex-col space-y-2 items-center">
-                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-                <p><strong>Email:</strong> {{ user.email }}</p>
-                <p><strong>Join Date:</strong> {{ user.join_date || user.createdAt }}</p>
-            </div>
+      <q-card-section class="text-center q-mb-md">
+        <div class="text-h6">{{ user.first_name }} {{ user.last_name }}</div>
+        <div class="text-subtitle2 text-grey-7">{{ user.email }}</div>
+      </q-card-section>
 
-            <div class="flex justify-end mt-4">
-                <q-btn flat label="Close" color="primary" @click="close" />
-            </div>
-        </q-card>
-    </q-dialog>
+      <q-separator />
+
+      <!-- Info List -->
+      <q-list bordered padding>
+        <q-item>
+          <q-item-section>Name</q-item-section>
+          <q-item-section side>{{ user.first_name }} {{ user.last_name }}</q-item-section>
+        </q-item>
+
+        <q-item>
+          <q-item-section>Email</q-item-section>
+          <q-item-section side>{{ user.email }}</q-item-section>
+        </q-item>
+
+        <q-item>
+          <q-item-section>Join Date</q-item-section>
+          <q-item-section side>{{ user.join_date || user.createdAt }}</q-item-section>
+        </q-item>
+
+        <q-item v-if="user.role">
+          <q-item-section>Role</q-item-section>
+          <q-item-section side>{{ user.role.roleName }}</q-item-section>
+        </q-item>
+      </q-list>
+
+      <!-- Footer -->
+      <q-card-actions align="right">
+        <q-btn flat label="Close" color="primary" @click="close" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>

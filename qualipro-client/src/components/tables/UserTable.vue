@@ -59,7 +59,7 @@ const viewModal = ref(null)
 const editModal = ref(null)
 
 const openCreateModal = () => createModal.value.open()
-const openViewModal = (user) => { selectedUser.value = user; viewModal.value.open() }
+const openViewModal = (user) => { selectedUser.value = user; viewModal.value.open(user) }
 const openEditModal = (user) => { selectedUser.value = user; editModal.value.open(user) }
 
 const columns = [
