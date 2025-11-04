@@ -95,13 +95,13 @@ module.exports = {
         const page = parseInt(condition.page) || 1;
         const limit = parseInt(condition.limit) || 10;
         const offset = (page - 1) * limit;
-        
+
         if (condition.where && condition.where.email) {
             const searchValue = condition.where.email;
             condition.where.email = { [Op.iLike]: `%${searchValue}%` };
         }
-        
-        const { count, rows: users } = await User.findAndCountAll({
+
+        const { count, rows } = await User.findAndCountAll({
             ...condition,
             attributes: { exclude: ['password'] },
             include: {
@@ -113,6 +113,17 @@ module.exports = {
             offset,
             distinct: true,
             order: [['createdAt', 'DESC']],
+        });
+
+        const users = rows.map((user) => {
+            const plainUser = user.get({ plain: true });
+
+            return {
+                ...plainUser,
+                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    `${plainUser.first_name} ${plainUser.last_name}`
+                )}&background=random`,
+            };
         });
 
         return {
