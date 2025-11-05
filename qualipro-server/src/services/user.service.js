@@ -1,4 +1,4 @@
-const { User, Role } = require("../models");
+const { sequelize, User, Role } = require("../models");
 const { Op } = require('sequelize');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -73,8 +73,16 @@ module.exports = {
     },
 
     async createUser(userData) {
-        const user = await User.create(userData);
-        return user;
+        const t = await sequelize.transaction();
+        try {
+            const user = await User.create(userData, { transaction: t });
+            await t.commit();
+            return user;
+        } catch (error) {
+            console.log({ error })
+            await t.rollback();
+            throw error;
+        }
     },
 
     async getUser(id) {
@@ -135,10 +143,20 @@ module.exports = {
     },
 
     async updateUser(id, data) {
-        const user = await User.findByPk(id);
-        if (!user) return null;
-        await user.update(data);
-        return user;
+        const t = await sequelize.transaction();
+        try {
+            const user = await User.findByPk(id, { transaction: t });
+            if (!user) {
+                await t.rollback();
+                return null;
+            }
+            await user.update(data, { transaction: t });
+            await t.commit();
+            return user;
+        } catch (error) {
+            await t.rollback();
+            throw error;
+        }
     },
 
     async deleteUser(id) {
