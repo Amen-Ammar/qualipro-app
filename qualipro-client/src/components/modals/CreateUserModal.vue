@@ -1,26 +1,30 @@
 <template>
     <q-dialog v-model="show">
-        <q-card class="w-full max-w-md p-6">
-            <h2 class="text-xl font-bold mb-4">Create New User</h2>
+        <q-card class="w-full max-w-md">
+            <div class="q-pa-lg">
+                <h2 class="text-xl font-bold mb-6">Create New User</h2>
+                <div class="q-gutter-md">
+                    <q-input v-model="form.first_name" label="First Name" outlined />
+                    <q-input v-model="form.last_name" label="Last Name" outlined />
+                    <q-input v-model="form.email" label="Email" type="email" outlined />
+                    <q-input v-model="form.password" label="Password" type="password" outlined />
+                    <q-select v-model="selectedRole" :options="roles" option-value="id" option-label="roleName" label="Select Role" outlined />
+                    <q-input outlined v-model="displayJoinDate" label="Joined Date" readonly>
+                        <template v-slot:append>
+                            <q-icon name="event" class="cursor-pointer">
+                                <q-popup-proxy v-model="calendarOpen" transition-show="scale" transition-hide="scale">
+                                    <q-date v-model="form.join_date"
+                                        @update:model-value="val => displayJoinDate = val ? moment(val, 'YYYY-MM-DD').format('DD/MM/YYYY') : ''" />
+                                </q-popup-proxy>
+                            </q-icon>
+                        </template>
+                    </q-input>
+                </div>
 
-            <q-input v-model="form.first_name" label="First Name" outlined class="mb-3" />
-            <q-input v-model="form.last_name" label="Last Name" outlined class="mb-3" />
-            <q-input v-model="form.email" label="Email" type="email" outlined class="mb-3" />
-            <q-input v-model="form.password" label="Password" type="password" outlined class="mb-3" />
-            <q-select v-model="selectedRole" :options="roles" option-value="id" option-label="roleName" label="Select Role" outlined class="mb-3" />
-            <q-input outlined v-model="displayJoinDate" label="Joined Date" class="mb-3" readonly>
-                <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy v-model="calendarOpen" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="form.join_date" @update:model-value="val => displayJoinDate = val ? moment(val, 'YYYY-MM-DD').format('DD/MM/YYYY') : ''"/>
-                        </q-popup-proxy>
-                    </q-icon>
-                </template>
-            </q-input>
-
-            <div class="flex justify-end gap-2 mt-4">
-                <q-btn flat label="Cancel" color="gray" @click="close()" />
-                <q-btn color="primary" label="Create" @click="submit()" />
+                <div class="flex justify-end gap-2 mt-6">
+                    <q-btn flat label="Cancel" color="gray" @click="close()" />
+                    <q-btn color="primary" label="Create" @click="submit()" />
+                </div>
             </div>
         </q-card>
     </q-dialog>
@@ -75,7 +79,7 @@ const submit = async () => {
         })
         return
     }
-    
+
     form.value.roleId = selectedRole.value
 
     try {

@@ -1,7 +1,6 @@
 <template>
-  <q-dialog v-model="show" persistent>
+  <q-dialog v-model="show">
     <q-card class="q-pa-md" style="min-width: 320px; max-width: 400px;">
-      <!-- Header -->
       <q-card-section class="row items-center justify-center q-mb-md">
         <q-avatar size="80px" rounded>
           <img :src="user.avatar || 'https://ui-avatars.com/api/?name=User&background=random'" />
@@ -12,10 +11,8 @@
         <div class="text-h6">{{ user.first_name }} {{ user.last_name }}</div>
         <div class="text-subtitle2 text-grey-7">{{ user.email }}</div>
       </q-card-section>
-
       <q-separator />
 
-      <!-- Info List -->
       <q-list bordered padding>
         <q-item>
           <q-item-section>Name</q-item-section>

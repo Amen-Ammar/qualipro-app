@@ -99,7 +99,7 @@ const deleteUser = (user) => {
         title: 'Confirm Delete',
         message: `Are you sure you want to delete ${user.first_name} ${user.last_name}?`,
         cancel: true,
-        persistent: true,
+        persistent: false,
     }).onOk(async () => {
         try {
             await userStore.deleteUser(user.id)
