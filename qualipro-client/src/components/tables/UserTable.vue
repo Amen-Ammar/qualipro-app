@@ -37,15 +37,16 @@
                 </q-td>
             </template>
             <template v-slot:bottom>
-                <div class="q-pa-sm flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                        <span>Rows per page:</span>
+                <div class="q-pa-sm row items-center">
+                    <div class="col-auto row items-center q-mr-md">
+                        <span class="text-subtitle2 q-mr-sm">Rows per page:</span>
                         <q-select v-model="pagination.rowsPerPage" :options="[5, 10, 20, 50]" dense outlined
-                            style="width: 80px" @update:model-value="onRowsPerPageChange" />
+                            style="width: 70px" @update:model-value="onRowsPerPageChange" />
                     </div>
-
-                    <q-pagination v-model="pagination.page" :max="totalPages" max-pages="7" boundary-numbers
-                        @update:model-value="onPageChange" />
+                    <div class="col row justify-center">
+                        <q-pagination v-model="pagination.page" :max="totalPages" boundary-numbers direction-links
+                            @update:model-value="onPageChange" />
+                    </div>
                 </div>
             </template>
         </q-table>
