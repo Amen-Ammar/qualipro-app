@@ -3,10 +3,7 @@
 **Author:** Amen Ammar  
 **Version:** 1.0.0
 
-A full-stack project with a frontend and backend,
-using:
-- Tailwind/Quasar/Vue.js with Pinia for the frontend.
-- Node.js/Express/Sequelize for the backend.
+A fullstack boilerplate featuring JWT auth, CRUD, REST API, Sequelize transactions, and Vue 3 + Quasar + Pinia frontend setup.
 
 ---
 
@@ -71,4 +68,5 @@ npm start
 # OR run each project separately
 npm run serve:frontend   # Frontend only
 npm run serve:backend    # Backend only
+
 
